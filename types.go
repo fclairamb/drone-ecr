@@ -1,45 +1,30 @@
 package main
 
-import "encoding/json"
+import (
+	"github.com/drone/drone-go/drone"
+)
 
-// StrSlice representes a string or an array of strings.
-// We need to override the json decoder to accept both options.
-type StrSlice struct {
-	parts []string
+type Save struct {
+	// Absolute or relative path
+	File string `json:"destination"`
+	// Only save specified tags (optional)
+	Tags drone.StringSlice `json:"tag"`
 }
 
-// UnmarshalJSON decodes the byte slice whether it's a string or an array of strings.
-// This method is needed to implement json.Unmarshaler.
-func (e *StrSlice) UnmarshalJSON(b []byte) error {
-	if len(b) == 0 {
-		return nil
-	}
-
-	p := make([]string, 0, 1)
-	if err := json.Unmarshal(b, &p); err != nil {
-		var s string
-		if err := json.Unmarshal(b, &s); err != nil {
-			return err
-		}
-		p = append(p, s)
-	}
-
-	e.parts = p
-	return nil
-}
-
-// Len returns the number of parts of the StrSlice.
-func (e *StrSlice) Len() int {
-	if e == nil {
-		return 0
-	}
-	return len(e.parts)
-}
-
-// Slice gets the parts of the StrSlice as a Slice of string.
-func (e *StrSlice) Slice() []string {
-	if e == nil {
-		return nil
-	}
-	return e.parts
+type ECR struct {
+	AccessKey string            `json:"access_key"`
+	SecretKey string            `json:"secret_key"`
+	Region    string            `json:"region"`
+	Storage   string            `json:"storage_driver"`
+	Mirror    string            `json:"mirror"`
+	Repo      string            `json:"repo"`
+	ForceTag  bool              `json:"force_tag"`
+	Tag       drone.StringSlice `json:"tag"`
+	File      string            `json:"file"`
+	Context   string            `json:"context"`
+	Bip       string            `json:"bip"`
+	Dns       []string          `json:"dns"`
+	Load      string            `json:"load"`
+	Save      Save              `json:"save"`
+	BuildArgs []string          `json:"build_args"`
 }

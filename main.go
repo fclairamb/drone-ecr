@@ -15,37 +15,13 @@ import (
 	"github.com/aws/aws-sdk-go/aws/credentials"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/ecr"
-	"github.com/drone/drone-plugin-go/plugin"
+	"github.com/drone/drone-go/drone"
+	"github.com/drone/drone-go/plugin"
 )
 
-type Save struct {
-	// Absolute or relative path
-	File string `json:"destination"`
-	// Only save specified tags (optional)
-	Tags StrSlice `json:"tag"`
-}
-
-type ECR struct {
-	AccessKey string   `json:"access_key"`
-	SecretKey string   `json:"secret_key"`
-	Region    string   `json:"region"`
-	Storage   string   `json:"storage_driver"`
-	Mirror    string   `json:"mirror"`
-	Repo      string   `json:"repo"`
-	ForceTag  bool     `json:"force_tag"`
-	Tag       StrSlice `json:"tag"`
-	File      string   `json:"file"`
-	Context   string   `json:"context"`
-	Bip       string   `json:"bip"`
-	Dns       []string `json:"dns"`
-	Load      string   `json:"load"`
-	Save      Save     `json:"save"`
-	BuildArgs []string `json:"build_args"`
-}
-
 func main() {
-	workspace := plugin.Workspace{}
-	build := plugin.Build{}
+	workspace := drone.Workspace{}
+	build := drone.Build{}
 	vargs := ECR{}
 
 	plugin.Param("workspace", &workspace)
@@ -124,7 +100,7 @@ func main() {
 	}
 	// Set the Tag value
 	if vargs.Tag.Len() == 0 {
-		vargs.Tag = StrSlice{[]string{"latest"}}
+		vargs.Tag.UnmarshalJSON([]byte("[\"latest\"]"))
 	}
 	// Get absolute path for 'save' file
 	if len(vargs.Save.File) != 0 {
