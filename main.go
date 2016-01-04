@@ -24,7 +24,6 @@ func main() {
 	build := drone.Build{}
 	vargs := ECR{}
 
-	fmt.Println("[Debug] - begging ecr plugin")
 	plugin.Param("workspace", &workspace)
 	plugin.Param("build", &build)
 	plugin.Param("vargs", &vargs)
@@ -45,13 +44,11 @@ func main() {
 		fmt.Println("Please provide a region")
 		os.Exit(1)
 	}
-	fmt.Println("[Debug] - Creating ECR client")
 	svc := ecr.New(session.New(&aws.Config{
 		Region:      aws.String(vargs.Region),
 		Credentials: credentials.NewStaticCredentials(vargs.AccessKey, vargs.SecretKey, ""),
 	}))
 
-	fmt.Println("[Debug] - Getting ECR Auth Token")
 	resp, err := svc.GetAuthorizationToken(&ecr.GetAuthorizationTokenInput{})
 	if err != nil {
 		fmt.Println("Unable to retrieve Registry credentials from AWS")

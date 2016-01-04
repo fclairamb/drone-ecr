@@ -2,8 +2,8 @@
 #
 #     docker build --rm=true -t plugins/drone-ecr .
 
-FROM gliderlabs/alpine:3.2
-RUN apk add -U ca-certificates && rm -rf /var/cache/apk/*
+FROM rancher/docker:1.9.1
 
-ADD drone-ecr /bin/
-ENTRYPOINT ["/bin/drone-ecr"]
+ADD drone-ecr /go/bin/
+VOLUME /var/lib/docker
+ENTRYPOINT ["/usr/bin/dockerlaunch", "/go/bin/drone-ecr"]
