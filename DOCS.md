@@ -77,7 +77,7 @@ The Drone build environment is, by default, ephemeral meaning that you layers ar
 
 ```yaml
 publish:
-  erc:
+  ecr:
     access_key: MyAWSAccessKey
     secret_key: MyAWSSecretKey
     region: us-east-1
